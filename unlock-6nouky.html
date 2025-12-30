@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODORA - Unlock Link Download</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <meta name="robots" content="noindex, nofollow"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #f0f2f5; --text-color: #2c3e50; --card-bg: #ffffff; --blue-color: #007bff; --red-color: #dc3545; --green-color: #28a745; --disabled-bg: #e2e6ea; }
+        body.dark-mode { --bg-color: #121212; --text-color: #e0e0e0; --card-bg: #1e1e1e; --disabled-bg: #2c2c2c; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .unlock-card { background: var(--card-bg); border-radius: 16px; padding: 40px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; max-width: 480px; margin: 0 auto; }
+        .lock-icon { font-size: 4em; color: var(--red-color); transition: 0.4s; }
+        .step-btn { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-radius: 12px; margin-top: 15px; text-decoration: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-telegram { background: #0088cc; color: white; }
+        .btn-download { background: var(--disabled-bg); color: #888; pointer-events: none; }
+        .btn-download.unlocked { background: var(--blue-color); color: white; pointer-events: auto; animation: bounceIn 0.6s; }
+        @keyframes bounceIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* HEADER SEDERHANA */
+        header { background: var(--card-bg); padding: 10px 15px; display: flex; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-text { font-family: 'Russo One', sans-serif; font-size: 1.5em; text-decoration: none; color: #333; }
+    </style>
+</head>
+<body>
+    <header><a href="/" class="logo-text"><span style="color:#007bff">MOD</span><span style="color:#dc3545">ORA</span></a></header>
+    <main><div class="container"><div class="unlock-card">
+        <div style="margin-bottom:20px"><i class="fa-solid fa-lock lock-icon" id="main-lock-icon"></i></div>
+        <h1 id="status-title">Link Terproteksi</h1>
+        <p>Gabung Telegram untuk membuka link.</p>
+        <a href="https://t.me/+xTtKEZ3KXAc5NTY9" target="_blank" class="step-btn btn-telegram" id="step1-btn" onclick="handleTelegramClick()">
+            <span><i class="fab fa-telegram-plane"></i> Join Telegram</span>
+            <i class="fa-solid fa-chevron-right" id="step1-icon"></i>
+        </a>
+        <a href="javascript:void(0)" class="step-btn btn-download" id="step2-btn">
+            <span><i class="fa-solid fa-cloud-arrow-down"></i> Download</span>
+            <i class="fa-solid fa-lock" id="step2-icon"></i>
+        </a>
+    </div></div></main>
+    <script>
+        // --- INI LINK YANG DIINJECT OTOMATIS ---
+        const REAL_DOWNLOAD_LINK = "https://t.me/+JZVMFir6yM0yZmY1"; 
+        
+        function handleTelegramClick() {
+            const btnT = document.getElementById('step1-btn');
+            const btnD = document.getElementById('step2-btn');
+            const icon = document.getElementById('step1-icon');
+            if (btnT.classList.contains('done')) return;
+            
+            btnT.style.opacity = "0.7"; 
+            btnT.innerHTML = "<span>Verifikasi...</span> <div class='spinner'></div>";
+            
+            setTimeout(() => {
+                btnT.innerHTML = "<span><i class='fa-solid fa-check'></i> Berhasil</span>";
+                btnT.classList.add('done');
+                btnD.classList.add('unlocked');
+                btnD.href = REAL_DOWNLOAD_LINK;
+                document.getElementById('main-lock-icon').classList.replace('fa-lock', 'fa-lock-open');
+                document.getElementById('main-lock-icon').style.color = '#28a745';
+                document.getElementById('status-title').innerText = "Link Terbuka!";
+                document.getElementById('status-title').style.color = '#28a745';
+                document.getElementById('step2-icon').classList.replace('fa-lock', 'fa-download');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
