@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secure Download - MODORA</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6; --danger: #ef4444; --success: #10b981;
+            --bg-dark: #020617; --card-bg: rgba(30, 41, 59, 0.6);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.15) 0px, transparent 50%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+
+        /* Ambient Glow Animation */
+        .glow { position: absolute; width: 300px; height: 300px; border-radius: 50%; filter: blur(80px); opacity: 0.4; z-index: -1; animation: float 10s infinite ease-in-out; }
+        .glow-1 { top: -50px; left: -50px; background: var(--primary); }
+        .glow-2 { bottom: -50px; right: -50px; background: var(--danger); animation-delay: -5s; }
+
+        .container { width: 100%; max-width: 420px; padding: 20px; z-index: 10; text-align: center; }
+
+        .brand { font-family: 'Russo One'; font-size: 28px; margin-bottom: 30px; letter-spacing: 1px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        
+        /* Glass Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 40px 25px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .lock-circle {
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .status-icon { font-size: 32px; color: var(--danger); transition: 0.5s; filter: drop-shadow(0 0 10px rgba(239,68,68,0.4)); }
+        
+        h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        p { font-size: 14px; color: #94a3b8; line-height: 1.5; margin-bottom: 30px; }
+
+        .btn-wrapper { display: flex; flex-direction: column; gap: 12px; }
+
+        .action-btn {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600; font-size: 14px;
+            transition: all 0.3s;
+            position: relative; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Telegram Button Style */
+        .btn-tg { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+        .btn-tg:hover { background: rgba(56, 189, 248, 0.2); transform: translateY(-2px); }
+        .btn-tg.checked { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: var(--success); pointer-events: none; }
+
+        /* Download Button Style */
+        .btn-dl { background: rgba(15, 23, 42, 0.4); color: #64748b; cursor: not-allowed; }
+        .btn-dl i.end-icon { font-size: 16px; }
+        
+        .btn-dl.active {
+            background: linear-gradient(135deg, var(--primary), #2563eb);
+            color: #fff; cursor: pointer; border: none;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+            animation: popIn 0.5s;
+        }
+        .btn-dl.active:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.6); }
+
+        /* Loader */
+        .loader { width:18px; height:18px; border:2px solid currentColor; border-bottom-color:transparent; border-radius:50%; display:inline-block; animation:spin 1s linear infinite; }
+
+        @keyframes float { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
+        @keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+        @keyframes popIn { 0%{transform:scale(0.9);opacity:0} 100%{transform:scale(1);opacity:1} }
+        @keyframes spin { to{transform:rotate(360deg)} }
+    </style>
+</head>
+<body>
+    <div class="glow glow-1"></div><div class="glow glow-2"></div>
+
+    <div class="container">
+        <div class="brand"><span style="color:var(--primary)">MOD</span><span style="color:var(--danger)">ORA</span></div>
+        
+        <div class="card">
+            <div class="lock-circle">
+                <i class="fa-solid fa-lock status-icon" id="mainIcon"></i>
+            </div>
+            
+            <h1 id="mainTitle">Akses Terkunci</h1>
+            <p>Selesaikan langkah di bawah untuk membuka link download premium secara gratis.</p>
+
+            <div class="btn-wrapper">
+                <a href="https://t.me/+xTtKEZ3KXAc5NTY9" target="_blank" class="action-btn btn-tg" id="step1" onclick="verifyTelegram()">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <i class="fab fa-telegram-plane" style="font-size:18px"></i>
+                        <span id="text1">Join Telegram Channel</span>
+                    </div>
+                    <div id="icon1"><i class="fa-solid fa-arrow-right"></i></div>
+                </a>
+
+                <a href="javascript:void(0)" class="action-btn btn-dl" id="step2">
+                    <div style="display:flex;align-items:center;gap:10px">
+                        <i class="fa-solid fa-cloud-arrow-down" style="font-size:18px"></i>
+                        <span id="text2">Download File (Locked)</span>
+                    </div>
+                    <i class="fa-solid fa-lock end-icon" id="icon2"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div style="margin-top:25px; font-size:12px; color:#64748b">
+            Protected by MODORA © 2025
+        </div>
+    </div>
+
+    <script>
+        const DESTINATION_URL = "https://t.me/modoraofficial";
+        let isChecking = false;
+
+        function verifyTelegram() {
+            const btn = document.getElementById('step1');
+            const txt = document.getElementById('text1');
+            const ico = document.getElementById('icon1');
+
+            if(isChecking || btn.classList.contains('checked')) return;
+            isChecking = true;
+
+            // Efek Loading
+            txt.innerText = "Memverifikasi...";
+            ico.innerHTML = "<span class='loader'></span>";
+            
+            // Simulasi Cek 5 Detik
+            setTimeout(() => {
+                // Sukses Telegram
+                btn.classList.add('checked');
+                txt.innerText = "Berhasil Bergabung";
+                ico.innerHTML = "<i class='fa-solid fa-check'></i>";
+                
+                unlockDownload();
+            }, 5000);
+        }
+
+        function unlockDownload() {
+            const btn = document.getElementById('step2');
+            const txt = document.getElementById('text2');
+            const ico = document.getElementById('icon2');
+            const mainIco = document.getElementById('mainIcon');
+            const mainTitle = document.getElementById('mainTitle');
+
+            // Ubah Status Utama
+            mainIco.className = "fa-solid fa-unlock-keyhole status-icon";
+            mainIco.style.color = "#10b981";
+            mainIco.style.filter = "drop-shadow(0 0 15px #10b981)";
+            mainTitle.innerText = "Akses Terbuka!";
+
+            // Aktifkan Tombol Download
+            btn.classList.add('active');
+            btn.href = DESTINATION_URL;
+            txt.innerText = "Download File Sekarang";
+            ico.className = "fa-solid fa-download end-icon";
+        }
+    </script>
+</body>
+</html>
